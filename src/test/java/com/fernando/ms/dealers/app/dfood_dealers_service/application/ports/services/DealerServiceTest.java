@@ -26,8 +26,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class DealerServiceTest {
     @Mock
-    private DealerInputPort dealerInputPort;
-    @Mock
     private DealerPersistencePort dealerPersistencePort;
 
     @InjectMocks
@@ -69,6 +67,16 @@ public class DealerServiceTest {
         when(dealerPersistencePort.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(DealerNotFoundException.class,()->dealerService.findById(1L));
         Mockito.verify(dealerPersistencePort,times(1)).findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("When Dealer Information Is Correct Expect Dealer Information Correct")
+    void When_DealerInformationIsCorrect_Expect_DealerInformationCorrect(){
+        Dealer dealer=TestUtilDealer.buildDealerMock();
+        when(dealerPersistencePort.save(dealer)).thenReturn(dealer);
+        Dealer dealerResponse=dealerService.save(dealer);
+        assertNotNull(dealerResponse);
+        Mockito.verify(dealerPersistencePort,times(1)).save(dealer);
     }
 
 

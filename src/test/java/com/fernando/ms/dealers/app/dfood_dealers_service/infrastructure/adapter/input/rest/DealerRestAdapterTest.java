@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fernando.ms.dealers.app.dfood_dealers_service.application.ports.input.DealerInputPort;
 import com.fernando.ms.dealers.app.dfood_dealers_service.domain.models.Dealer;
 import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.input.rest.mapper.DealerRestMapper;
+import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.input.rest.models.requests.CreateDealerRequest;
 import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.input.rest.models.response.DealerResponse;
 import com.fernando.ms.dealers.app.dfood_dealers_service.utils.TestUtilDealer;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -92,6 +94,30 @@ public class DealerRestAdapterTest {
         Mockito.verify(dealerRestMapper,times(1)).toDealerResponse(any(Dealer.class));
     }
 
+
+    @Test
+    @DisplayName("When Dealer Information Is Correct Expect Dealer Information Save Successfully")
+    void When_DealerInformationIsCorrect_Expect_DealerInformationSaveSuccessfully() throws Exception {
+        DealerResponse productResponse=TestUtilDealer.buildDealerResponseMock();
+        Dealer dealer=TestUtilDealer.buildDealerMock();
+        CreateDealerRequest rq=TestUtilDealer.buildCreateDealerRequestMock();
+        when(dealerInputPort.save(any(Dealer.class)))
+                .thenReturn(dealer);
+        when(dealerRestMapper.toDealerResponse(any(Dealer.class)))
+                .thenReturn(productResponse);
+        when(dealerRestMapper.toDealer(any(CreateDealerRequest.class)))
+                .thenReturn(dealer);
+
+
+        mockMvc.perform(post("/dealers")
+                        .content( objectMapper.writeValueAsString(rq))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1L));
+        Mockito.verify(dealerInputPort,times(1)).save((any(Dealer.class)));
+        Mockito.verify(dealerRestMapper,times(1)).toDealerResponse(any(Dealer.class));
+        Mockito.verify(dealerRestMapper,times(1)).toDealer(any(CreateDealerRequest.class));
+    }
 
 
 }

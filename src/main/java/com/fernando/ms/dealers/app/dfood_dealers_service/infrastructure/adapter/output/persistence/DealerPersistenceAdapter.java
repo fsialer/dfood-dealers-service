@@ -26,4 +26,9 @@ public class DealerPersistenceAdapter implements DealerPersistencePort {
     public Optional<Dealer> findById(Long id) {
         return dealerJpaRepository.findById(id).map(dealerPersistenceMapper::toDealer);
     }
+
+    @Override
+    public Dealer save(Dealer dealer) {
+        return dealerPersistenceMapper.toDealer(dealerJpaRepository.save(dealerPersistenceMapper.toDealerEntity(dealer)));
+    }
 }

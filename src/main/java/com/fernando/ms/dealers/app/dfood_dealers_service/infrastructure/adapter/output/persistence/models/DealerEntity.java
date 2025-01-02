@@ -1,10 +1,10 @@
 package com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.output.persistence.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,6 +14,8 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "dealers")
 public class DealerEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String lastName;
@@ -22,5 +24,5 @@ public class DealerEntity {
     private String numberLicense;
     private String numberDocument;
     private LocalDate expirationDateLicense;
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 }

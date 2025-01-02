@@ -17,5 +17,5 @@ public class Dealer {
     private String phone;
     private String numberLicense;
     private String numberDocument;
-    private LocalDate expirationDateLicense;
+    private String expirationDateLicense;
 }

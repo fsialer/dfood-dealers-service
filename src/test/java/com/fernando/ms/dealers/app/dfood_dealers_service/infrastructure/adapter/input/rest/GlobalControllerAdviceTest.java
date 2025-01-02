@@ -3,6 +3,7 @@ package com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fernando.ms.dealers.app.dfood_dealers_service.application.ports.input.DealerInputPort;
 import com.fernando.ms.dealers.app.dfood_dealers_service.domain.exceptions.DealerNotFoundException;
+import com.fernando.ms.dealers.app.dfood_dealers_service.domain.models.Dealer;
 import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.input.rest.mapper.DealerRestMapper;
 import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.input.rest.models.response.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,16 +15,19 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import static com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.input.rest.models.enums.ErrorType.FUNCTIONAL;
 import static com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.input.rest.models.enums.ErrorType.SYSTEM;
-import static com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.utils.ErrorCatalog.DEALER_NOT_FOUND;
-import static com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.utils.ErrorCatalog.INTERNAL_SERVER_ERROR;
+import static com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.utils.ErrorCatalog.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(DealerRestAdapter.class)
@@ -88,5 +92,28 @@ public class GlobalControllerAdviceTest {
                     );
                 });
     }
+
+    @Test
+    @DisplayName("Expect MethodArgumentNotValidException When Dealer Information Is Invalid")
+    void Expect_MethodArgumentNotValidException_When_DealerInformationIsInvalid() throws Exception {
+
+        mockMvc.perform(post("/dealers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> {
+                    ErrorResponse errorResponse = objectMapper.readValue(
+                            result.getResponse().getContentAsString(), ErrorResponse.class);
+                    assertAll(
+                            () -> assertThat(errorResponse.getCode()).isEqualTo(DEALERS_BAD_PARAMETERS.getCode()),
+                            () -> assertThat(errorResponse.getType()).isEqualTo(FUNCTIONAL),
+                            () -> assertThat(errorResponse.getMessage()).isEqualTo(DEALERS_BAD_PARAMETERS.getMessage()),
+                            () -> assertThat(errorResponse.getDetails()).isNotNull(),
+                            () -> assertThat(errorResponse.getTimestamp()).isNotNull()
+                    );
+                })
+                .andDo(print());
+    }
+
 
 }

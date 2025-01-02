@@ -76,6 +76,20 @@ public class DealerPersistenceAdapterTest {
         assertNotNull(dealerResponse);
         Mockito.verify(dealerJpaRepository,times(1)).findById(anyLong());
         Mockito.verify(dealerPersistenceMapper,times(1)).toDealer(any(DealerEntity.class));
+    }
 
+    @Test
+    @DisplayName("When Dealer Information Is Correct Expect Dealer Information Save Successfully")
+    void When_DealerInformationIsCorrect_Expect_DealerInformationSaveSuccessfully(){
+        Dealer dealer=TestUtilDealer.buildDealerMock();
+        DealerEntity dealerEntity=TestUtilDealer.buildDealerEntityMock();
+        when(dealerJpaRepository.save(any(DealerEntity.class))).thenReturn(dealerEntity);
+        when(dealerPersistenceMapper.toDealerEntity(any(Dealer.class))).thenReturn(dealerEntity);
+        when(dealerPersistenceMapper.toDealer(any(DealerEntity.class))).thenReturn(dealer);
+        Dealer dealerResponse=dealerPersistenceAdapter.save(dealer);
+        assertNotNull(dealerResponse);
+        Mockito.verify(dealerJpaRepository,times(1)).save(any(DealerEntity.class));
+        Mockito.verify(dealerPersistenceMapper,times(1)).toDealerEntity(any(Dealer.class));
+        Mockito.verify(dealerPersistenceMapper,times(1)).toDealer(any(DealerEntity.class));
     }
 }

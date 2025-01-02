@@ -7,5 +7,5 @@ import java.util.List;
 public interface DealerInputPort {
     List<Dealer> findAll();
     Dealer findById(Long id);
+    Dealer save(Dealer dealer);
 }
-   

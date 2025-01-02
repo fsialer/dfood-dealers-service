@@ -23,4 +23,9 @@ public class DealerService implements DealerInputPort {
     public Dealer findById(Long id) {
         return dealerPersistencePort.findById(id).orElseThrow(DealerNotFoundException::new);
     }
+
+    @Override
+    public Dealer save(Dealer dealer) {
+        return dealerPersistencePort.save(dealer);
+    }
 }
