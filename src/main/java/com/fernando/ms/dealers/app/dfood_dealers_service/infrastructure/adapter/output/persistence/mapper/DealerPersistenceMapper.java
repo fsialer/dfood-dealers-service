@@ -9,4 +9,5 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface DealerPersistenceMapper {
     List<Dealer> toDealers(List<DealerEntity> dealers);
+    Dealer toDealer(DealerEntity dealer);
 }

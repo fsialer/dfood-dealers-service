@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -19,5 +20,10 @@ public class DealerPersistenceAdapter implements DealerPersistencePort {
     @Override
     public List<Dealer> findAll() {
         return dealerPersistenceMapper.toDealers(dealerJpaRepository.findAll());
+    }
+
+    @Override
+    public Optional<Dealer> findById(Long id) {
+        return dealerJpaRepository.findById(id).map(dealerPersistenceMapper::toDealer);
     }
 }

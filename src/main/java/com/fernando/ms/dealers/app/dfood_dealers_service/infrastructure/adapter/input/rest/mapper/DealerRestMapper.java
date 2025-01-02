@@ -9,4 +9,5 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface DealerRestMapper {
     List<DealerResponse> toDealersResponse(List<Dealer> dealers);
+    DealerResponse toDealerResponse(Dealer dealer);
 }

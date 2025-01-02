@@ -6,9 +6,11 @@ import com.fernando.ms.dealers.app.dfood_dealers_service.domain.models.Dealer;
 import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.input.rest.mapper.DealerRestMapper;
 import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.input.rest.models.response.DealerResponse;
 import com.fernando.ms.dealers.app.dfood_dealers_service.utils.TestUtilDealer;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,7 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -39,8 +41,14 @@ public class DealerRestAdapterTest {
 
     private ObjectMapper objectMapper;
 
+    @BeforeEach
+    void setUp(){
+        MockitoAnnotations.openMocks(this);
+        objectMapper=new ObjectMapper();
+    }
+
     @Test
-    @DisplayName("When Orders Are Availability Expect Customers Information Successfully")
+    @DisplayName("When Dealers Are Availability Expect Dealers Information Successfully")
     void When_DealersAreAvailability_Expect_DealersInformationSuccessfully() throws Exception {
 
         Dealer dealer = TestUtilDealer.buildDealerMock();
@@ -61,6 +69,29 @@ public class DealerRestAdapterTest {
         Mockito.verify(dealerInputPort,times(1)).findAll();
         Mockito.verify(dealerRestMapper,times(1)).toDealersResponse(anyList());
     }
+
+    @Test
+    @DisplayName("When Dealer Are Availability Expect Dealers Information Successfully")
+    void When_DealerAreAvailability_Expect_DealerInformationSuccessfully() throws Exception {
+
+        Dealer dealer = TestUtilDealer.buildDealerMock();
+        DealerResponse dealerResponse= TestUtilDealer.buildDealerResponseMock();
+
+        when(dealerInputPort.findById(anyLong()))
+                .thenReturn(dealer);
+
+        when(dealerRestMapper.toDealerResponse(any(Dealer.class)))
+                .thenReturn(dealerResponse);
+
+        mockMvc.perform(get("/dealers/{id}",1L).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isNotEmpty())
+                .andDo(print());
+
+        Mockito.verify(dealerInputPort,times(1)).findById(anyLong());
+        Mockito.verify(dealerRestMapper,times(1)).toDealerResponse(any(Dealer.class));
+    }
+
 
 
 }

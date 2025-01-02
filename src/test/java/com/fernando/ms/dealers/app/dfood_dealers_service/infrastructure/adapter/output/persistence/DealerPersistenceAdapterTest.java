@@ -15,9 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +35,7 @@ public class DealerPersistenceAdapterTest {
     private DealerPersistenceAdapter dealerPersistenceAdapter;
 
     @Test
-    @DisplayName("When Dealer Information Exists Expect_AListDealersAvailability")
+    @DisplayName("When Dealer Information Exists Expect A List Dealers Availability")
     void When_DealerInformationExists_Expect_AListDealersAvailability(){
         Dealer dealer= TestUtilDealer.buildDealerMock();
         DealerEntity dealerEntity=TestUtilDealer.buildDealerEntityMock();
@@ -45,5 +47,35 @@ public class DealerPersistenceAdapterTest {
         assertEquals(1,dealers.size());
         Mockito.verify(dealerJpaRepository,times(1)).findAll();
         Mockito.verify(dealerPersistenceMapper,times(1)).toDealers(anyList());
+    }
+
+    @Test
+    @DisplayName("When Dealer Information No Exists Expect A List Void")
+    void When_DealerInformationNotExists_Expect_AListVoid(){
+        Dealer dealer= TestUtilDealer.buildDealerMock();
+
+
+        when(dealerJpaRepository.findAll()).thenReturn(Collections.emptyList());
+        when(dealerPersistenceMapper.toDealers(anyList())).thenReturn(Collections.emptyList());
+
+        List<Dealer> dealers=dealerPersistenceAdapter.findAll();
+        assertEquals(0,dealers.size());
+        Mockito.verify(dealerJpaRepository,times(1)).findAll();
+        Mockito.verify(dealerPersistenceMapper,times(1)).toDealers(anyList());
+    }
+
+
+    @Test
+    @DisplayName("When Dealer Identifier Is Correct Expect Dealer Information Successfully")
+    void When_DealerIdentifierIsCorrectExpectDealerInformationSuccessfully(){
+        DealerEntity dealerEntity = TestUtilDealer.buildDealerEntityMock();
+        Dealer dealer = TestUtilDealer.buildDealerMock();
+        when(dealerJpaRepository.findById(anyLong())).thenReturn(Optional.of(dealerEntity));
+        when(dealerPersistenceMapper.toDealer(any(DealerEntity.class))).thenReturn(dealer);
+        Optional<Dealer> dealerResponse=dealerPersistenceAdapter.findById(1L);
+        assertNotNull(dealerResponse);
+        Mockito.verify(dealerJpaRepository,times(1)).findById(anyLong());
+        Mockito.verify(dealerPersistenceMapper,times(1)).toDealer(any(DealerEntity.class));
+
     }
 }

@@ -3,6 +3,7 @@ package com.fernando.ms.dealers.app.dfood_dealers_service.application.ports.serv
 import com.fernando.ms.dealers.app.dfood_dealers_service.application.ports.input.DealerInputPort;
 import com.fernando.ms.dealers.app.dfood_dealers_service.application.ports.output.DealerPersistencePort;
 import com.fernando.ms.dealers.app.dfood_dealers_service.application.services.DealerService;
+import com.fernando.ms.dealers.app.dfood_dealers_service.domain.exceptions.DealerNotFoundException;
 import com.fernando.ms.dealers.app.dfood_dealers_service.domain.models.Dealer;
 import com.fernando.ms.dealers.app.dfood_dealers_service.utils.TestUtilDealer;
 import org.junit.jupiter.api.DisplayName;
@@ -15,8 +16,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -49,5 +52,24 @@ public class DealerServiceTest {
         assertEquals(0,dealers.size());
         Mockito.verify(dealerPersistencePort,times(1)).findAll();
     }
+
+    @Test
+    @DisplayName("When Dealer Information By Identifier Is Correct Expect Dealer Information Correct")
+    void When_OrderInformationByIdentifierIsCorrect_Expect_OrderInformationCorrect(){
+        Dealer dealer=TestUtilDealer.buildDealerMock();
+        when(dealerPersistencePort.findById(anyLong())).thenReturn(Optional.of(dealer));
+        Dealer dealerResponse=dealerService.findById(1L);
+        assertNotNull(dealerResponse);
+        Mockito.verify(dealerPersistencePort,times(1)).findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("Expect DealerNotFoundException When Dealer Information By Identifier Is Incorrect")
+    void Expect_OrderNotFoundException_When_OrderInformationByIdentifierIsIncorrect(){
+        when(dealerPersistencePort.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(DealerNotFoundException.class,()->dealerService.findById(1L));
+        Mockito.verify(dealerPersistencePort,times(1)).findById(anyLong());
+    }
+
 
 }

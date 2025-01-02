@@ -2,6 +2,7 @@ package com.fernando.ms.dealers.app.dfood_dealers_service.application.services;
 
 import com.fernando.ms.dealers.app.dfood_dealers_service.application.ports.input.DealerInputPort;
 import com.fernando.ms.dealers.app.dfood_dealers_service.application.ports.output.DealerPersistencePort;
+import com.fernando.ms.dealers.app.dfood_dealers_service.domain.exceptions.DealerNotFoundException;
 import com.fernando.ms.dealers.app.dfood_dealers_service.domain.models.Dealer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,5 +17,10 @@ public class DealerService implements DealerInputPort {
     @Override
     public List<Dealer> findAll() {
         return dealerPersistencePort.findAll();
+    }
+
+    @Override
+    public Dealer findById(Long id) {
+        return dealerPersistencePort.findById(id).orElseThrow(DealerNotFoundException::new);
     }
 }
