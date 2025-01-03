@@ -28,4 +28,22 @@ public class DealerService implements DealerInputPort {
     public Dealer save(Dealer dealer) {
         return dealerPersistencePort.save(dealer);
     }
+
+    @Override
+    public Dealer update(Long id, Dealer dealer) {
+        return dealerPersistencePort.findById(id)
+                .map(dealerUpdate->{
+                    dealerUpdate.setName(dealer.getName());
+                    dealerUpdate.setLastName(dealer.getLastName());
+                    dealerUpdate.setEmail(dealer.getEmail());
+                    dealerUpdate.setPhone(dealer.getPhone());
+                    dealerUpdate.setNumberLicense(dealer.getNumberLicense());
+                    dealerUpdate.setNumberDocument(dealer.getNumberDocument());
+                    dealerUpdate.setExpirationDateLicense(dealer.getExpirationDateLicense());
+                    return dealerPersistencePort.save(dealerUpdate);
+                })
+                .orElseThrow(DealerNotFoundException::new);
+    }
+
+
 }

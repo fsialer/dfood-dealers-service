@@ -8,4 +8,5 @@ public interface DealerInputPort {
     List<Dealer> findAll();
     Dealer findById(Long id);
     Dealer save(Dealer dealer);
+    Dealer update(Long id,Dealer dealer);
 }

@@ -35,4 +35,10 @@ public class DealerRestAdapter {
         DealerResponse response=dealerRestMapper.toDealerResponse(dealerInputPort.save(dealerRestMapper.toDealer(rq)));
         return ResponseEntity.created(URI.create("/dealers/".concat(response.getId().toString()))).body(response);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<DealerResponse> update(@PathVariable Long id,@Valid @RequestBody CreateDealerRequest rq){
+        DealerResponse response=dealerRestMapper.toDealerResponse(dealerInputPort.update(id,dealerRestMapper.toDealer(rq)));
+        return ResponseEntity.ok().body(response);
+    }
 }

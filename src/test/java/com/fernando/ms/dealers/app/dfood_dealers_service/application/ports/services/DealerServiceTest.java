@@ -53,7 +53,7 @@ public class DealerServiceTest {
 
     @Test
     @DisplayName("When Dealer Information By Identifier Is Correct Expect Dealer Information Correct")
-    void When_OrderInformationByIdentifierIsCorrect_Expect_OrderInformationCorrect(){
+    void When_DealerInformationByIdentifierIsCorrect_Expect_DealerInformationCorrect(){
         Dealer dealer=TestUtilDealer.buildDealerMock();
         when(dealerPersistencePort.findById(anyLong())).thenReturn(Optional.of(dealer));
         Dealer dealerResponse=dealerService.findById(1L);
@@ -63,7 +63,7 @@ public class DealerServiceTest {
 
     @Test
     @DisplayName("Expect DealerNotFoundException When Dealer Information By Identifier Is Incorrect")
-    void Expect_OrderNotFoundException_When_OrderInformationByIdentifierIsIncorrect(){
+    void Expect_OrderNotFoundException_When_DealerInformationByIdentifierIsIncorrect(){
         when(dealerPersistencePort.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(DealerNotFoundException.class,()->dealerService.findById(1L));
         Mockito.verify(dealerPersistencePort,times(1)).findById(anyLong());
@@ -77,6 +77,28 @@ public class DealerServiceTest {
         Dealer dealerResponse=dealerService.save(dealer);
         assertNotNull(dealerResponse);
         Mockito.verify(dealerPersistencePort,times(1)).save(dealer);
+    }
+
+    @Test
+    @DisplayName("When Dealer Information Is Correct Expect Dealer Information Update Correct")
+    void When_DealerInformationIsCorrect_Expect_DealerInformationUpdateCorrect(){
+        Dealer dealer=TestUtilDealer.buildDealerMock();
+        when(dealerPersistencePort.findById(anyLong())).thenReturn(Optional.of(dealer));
+        when(dealerPersistencePort.save(dealer)).thenReturn(dealer);
+        Dealer dealerResponse=dealerService.update(1L,dealer);
+        assertNotNull(dealerResponse);
+        Mockito.verify(dealerPersistencePort,times(1)).findById(anyLong());
+        Mockito.verify(dealerPersistencePort,times(1)).save(dealer);
+    }
+
+    @Test
+    @DisplayName("Expect OrderNotFoundException When Dealer Identifier Is Incorrect")
+    void Expect_OrderNotFoundException_When_DealerIdentifierIsIncorrect(){
+        Dealer dealer=TestUtilDealer.buildDealerMock();
+        when(dealerPersistencePort.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(DealerNotFoundException.class,()->dealerService.update(1L,dealer));
+        Mockito.verify(dealerPersistencePort,times(1)).findById(anyLong());
+        Mockito.verify(dealerPersistencePort,times(0)).save(dealer);
     }
 
 

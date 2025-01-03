@@ -24,8 +24,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -118,6 +117,31 @@ public class DealerRestAdapterTest {
         Mockito.verify(dealerRestMapper,times(1)).toDealerResponse(any(Dealer.class));
         Mockito.verify(dealerRestMapper,times(1)).toDealer(any(CreateDealerRequest.class));
     }
+
+    @Test
+    @DisplayName("When Dealer Information Is Correct Expect Dealer Information Updated Successfully")
+    void When_DealerInformationIsCorrect_Expect_DealerInformationUpdatedSuccessfully() throws Exception {
+        DealerResponse productResponse=TestUtilDealer.buildDealerResponseMock();
+        Dealer dealer=TestUtilDealer.buildDealerMock();
+        CreateDealerRequest rq=TestUtilDealer.buildCreateDealerRequestMock();
+        when(dealerInputPort.update(anyLong(),any(Dealer.class)))
+                .thenReturn(dealer);
+        when(dealerRestMapper.toDealerResponse(any(Dealer.class)))
+                .thenReturn(productResponse);
+        when(dealerRestMapper.toDealer(any(CreateDealerRequest.class)))
+                .thenReturn(dealer);
+
+
+        mockMvc.perform(put("/dealers/{id}",1L)
+                        .content( objectMapper.writeValueAsString(rq))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L));
+        Mockito.verify(dealerInputPort,times(1)).update(anyLong(),(any(Dealer.class)));
+        Mockito.verify(dealerRestMapper,times(1)).toDealerResponse(any(Dealer.class));
+        Mockito.verify(dealerRestMapper,times(1)).toDealer(any(CreateDealerRequest.class));
+    }
+
 
 
 }
