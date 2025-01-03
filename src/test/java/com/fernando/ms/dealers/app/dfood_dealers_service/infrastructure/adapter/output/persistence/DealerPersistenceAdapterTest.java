@@ -20,8 +20,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class DealerPersistenceAdapterTest {
@@ -91,5 +90,13 @@ public class DealerPersistenceAdapterTest {
         Mockito.verify(dealerJpaRepository,times(1)).save(any(DealerEntity.class));
         Mockito.verify(dealerPersistenceMapper,times(1)).toDealerEntity(any(Dealer.class));
         Mockito.verify(dealerPersistenceMapper,times(1)).toDealer(any(DealerEntity.class));
+    }
+
+    @Test
+    @DisplayName("When DealerIdentifier Is Correct Expect Dealer Information Delete Successfully")
+    void When_DealerIdentifierIsCorrect_Expect_DealerInformationDeleteSuccessfully(){
+        doNothing().when(dealerJpaRepository).deleteById(anyLong());
+        dealerPersistenceAdapter.delete(1L);
+        Mockito.verify(dealerJpaRepository,times(1)).deleteById(anyLong());
     }
 }

@@ -6,6 +6,7 @@ import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.
 import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.input.rest.models.response.DealerResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,5 +41,11 @@ public class DealerRestAdapter {
     public ResponseEntity<DealerResponse> update(@PathVariable Long id,@Valid @RequestBody CreateDealerRequest rq){
         DealerResponse response=dealerRestMapper.toDealerResponse(dealerInputPort.update(id,dealerRestMapper.toDealer(rq)));
         return ResponseEntity.ok().body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id){
+        dealerInputPort.delete(id);
     }
 }

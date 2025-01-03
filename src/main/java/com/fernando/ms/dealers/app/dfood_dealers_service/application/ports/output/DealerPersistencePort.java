@@ -9,4 +9,5 @@ public interface DealerPersistencePort {
     List<Dealer> findAll();
     Optional<Dealer> findById(Long id);
     Dealer save(Dealer dealer);
+    void delete(Long id);
 }

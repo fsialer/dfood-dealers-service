@@ -31,4 +31,9 @@ public class DealerPersistenceAdapter implements DealerPersistencePort {
     public Dealer save(Dealer dealer) {
         return dealerPersistenceMapper.toDealer(dealerJpaRepository.save(dealerPersistenceMapper.toDealerEntity(dealer)));
     }
+
+    @Override
+    public void delete(Long id) {
+        dealerJpaRepository.deleteById(id);
+    }
 }

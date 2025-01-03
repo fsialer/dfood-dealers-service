@@ -22,8 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -140,6 +139,17 @@ public class DealerRestAdapterTest {
         Mockito.verify(dealerInputPort,times(1)).update(anyLong(),(any(Dealer.class)));
         Mockito.verify(dealerRestMapper,times(1)).toDealerResponse(any(Dealer.class));
         Mockito.verify(dealerRestMapper,times(1)).toDealer(any(CreateDealerRequest.class));
+    }
+
+    @Test
+    @DisplayName("When Dealer Information Is Correct Expect Dealer Information Deleted Successfully")
+    void When_DealerInformationIsCorrect_Expect_DealerInformationDeletedSuccessfully() throws Exception {
+
+        doNothing().when(dealerInputPort).delete(anyLong());
+        mockMvc.perform(delete("/dealers/{id}",1L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+        Mockito.verify(dealerInputPort,times(1)).delete(anyLong());
     }
 
 

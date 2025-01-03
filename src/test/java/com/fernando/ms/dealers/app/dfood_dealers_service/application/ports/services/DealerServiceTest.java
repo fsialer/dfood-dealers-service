@@ -1,6 +1,5 @@
 package com.fernando.ms.dealers.app.dfood_dealers_service.application.ports.services;
 
-import com.fernando.ms.dealers.app.dfood_dealers_service.application.ports.input.DealerInputPort;
 import com.fernando.ms.dealers.app.dfood_dealers_service.application.ports.output.DealerPersistencePort;
 import com.fernando.ms.dealers.app.dfood_dealers_service.application.services.DealerService;
 import com.fernando.ms.dealers.app.dfood_dealers_service.domain.exceptions.DealerNotFoundException;
@@ -20,8 +19,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class DealerServiceTest {
@@ -92,13 +90,33 @@ public class DealerServiceTest {
     }
 
     @Test
-    @DisplayName("Expect OrderNotFoundException When Dealer Identifier Is Incorrect")
-    void Expect_OrderNotFoundException_When_DealerIdentifierIsIncorrect(){
+    @DisplayName("Expect DealerNotFoundException When Dealer Identifier Is Incorrect")
+    void Expect_DealerNotFoundException_When_DealerIdentifierIsIncorrect(){
         Dealer dealer=TestUtilDealer.buildDealerMock();
         when(dealerPersistencePort.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(DealerNotFoundException.class,()->dealerService.update(1L,dealer));
         Mockito.verify(dealerPersistencePort,times(1)).findById(anyLong());
         Mockito.verify(dealerPersistencePort,times(0)).save(dealer);
+    }
+
+    @Test
+    @DisplayName("When DealerIdentifier Is Correct Expect Dealer Information Delete Correct")
+    void When_DealerIdentifierIsCorrect_Expect_DealerInformationDeleteCorrect(){
+        Dealer dealer=TestUtilDealer.buildDealerMock();
+        when(dealerPersistencePort.findById(anyLong())).thenReturn(Optional.of(dealer));
+        doNothing().when(dealerPersistencePort).delete(anyLong());
+        dealerService.delete(1L);
+        Mockito.verify(dealerPersistencePort,times(1)).findById(anyLong());
+        Mockito.verify(dealerPersistencePort,times(1)).delete(anyLong());
+    }
+
+    @Test
+    @DisplayName("Expect DealerNotFoundException When Dealer Identifier For Delete Is Incorrect")
+    void Expect_DealerNotFoundException_When_DealerIdentifierForDeleteIsIncorrect(){
+        when(dealerPersistencePort.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(DealerNotFoundException.class,()->dealerService.delete(1L));
+        Mockito.verify(dealerPersistencePort,times(1)).findById(anyLong());
+        Mockito.verify(dealerPersistencePort,times(0)).delete(anyLong());
     }
 
 
