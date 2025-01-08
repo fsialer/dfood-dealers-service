@@ -36,4 +36,9 @@ public class DealerPersistenceAdapter implements DealerPersistencePort {
     public void delete(Long id) {
         dealerJpaRepository.deleteById(id);
     }
+
+    @Override
+    public void verifyExistsById(Long id) {
+        dealerJpaRepository.existsById(id);
+    }
 }

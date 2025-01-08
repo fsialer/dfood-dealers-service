@@ -48,4 +48,10 @@ public class DealerRestAdapter {
     public void delete(@PathVariable Long id){
         dealerInputPort.delete(id);
     }
+
+    @GetMapping("verify-exists-by-id")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void verifyExistsById(@RequestParam("id") Long id){
+        dealerInputPort.verifyExistsById(id);
+    }
 }

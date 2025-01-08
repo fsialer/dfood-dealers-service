@@ -119,5 +119,26 @@ public class DealerServiceTest {
         Mockito.verify(dealerPersistencePort,times(0)).delete(anyLong());
     }
 
+    @Test
+    @DisplayName("When DealerIdentifier Is Correct Expect Return true")
+    void When_DealerIdentifierIsCorrect_Expect_ReturnTrue(){
+        Dealer dealer=TestUtilDealer.buildDealerMock();
+        when(dealerPersistencePort.findById(anyLong())).thenReturn(Optional.of(dealer));
+        doNothing().when(dealerPersistencePort).verifyExistsById(anyLong());
+        dealerService.verifyExistsById(1L);
+        Mockito.verify(dealerPersistencePort,times(1)).findById(anyLong());
+        Mockito.verify(dealerPersistencePort,times(1)).verifyExistsById(anyLong());
+    }
+
+    @Test
+    @DisplayName("Expect DealerNotFoundException When Dealer Identifier For Delete Is Incorrect")
+    void Expect_DealerNotFoundException_When_DealerIdentifierForVerifyExistsByIdIsIncorrect(){
+        when(dealerPersistencePort.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(DealerNotFoundException.class,()->dealerService.verifyExistsById(1L));
+        Mockito.verify(dealerPersistencePort,times(1)).findById(anyLong());
+        Mockito.verify(dealerPersistencePort,times(0)).verifyExistsById(anyLong());
+    }
+
+
 
 }

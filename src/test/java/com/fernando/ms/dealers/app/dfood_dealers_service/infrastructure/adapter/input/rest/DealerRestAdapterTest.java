@@ -152,6 +152,18 @@ public class DealerRestAdapterTest {
         Mockito.verify(dealerInputPort,times(1)).delete(anyLong());
     }
 
+    @Test
+    void When_DealerIdentifierIsCorrect_Expect_DealerVerifiedSuccessfully() throws Exception {
+        doNothing().when(dealerInputPort).verifyExistsById(anyLong());
+
+        mockMvc.perform(get("/dealers/verify-exists-by-id")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("id","1"))
+                .andExpect(status().isNoContent());
+
+        Mockito.verify(dealerInputPort,times(1)).verifyExistsById(anyLong());
+    }
+
 
 
 }

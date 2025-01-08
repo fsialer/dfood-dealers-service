@@ -54,5 +54,14 @@ public class DealerService implements DealerInputPort {
         dealerPersistencePort.delete(id);
     }
 
+    @Override
+    public void verifyExistsById(Long id) {
+        if (!dealerPersistencePort.findById(id).isPresent()){
+            throw new DealerNotFoundException();
+        }
+
+        dealerPersistencePort.verifyExistsById(id);
+    }
+
 
 }

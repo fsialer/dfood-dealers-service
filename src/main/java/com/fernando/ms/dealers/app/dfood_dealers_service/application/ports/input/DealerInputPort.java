@@ -10,4 +10,5 @@ public interface DealerInputPort {
     Dealer save(Dealer dealer);
     Dealer update(Long id,Dealer dealer);
     void delete(Long id);
+    void verifyExistsById(Long id);
 }

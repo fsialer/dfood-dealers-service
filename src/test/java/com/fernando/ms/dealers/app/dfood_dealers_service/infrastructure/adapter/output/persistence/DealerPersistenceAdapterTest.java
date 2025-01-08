@@ -99,4 +99,12 @@ public class DealerPersistenceAdapterTest {
         dealerPersistenceAdapter.delete(1L);
         Mockito.verify(dealerJpaRepository,times(1)).deleteById(anyLong());
     }
+
+    @Test
+    @DisplayName("When DealerIdentifier Is Correct Expect Dealer Verify Successfully")
+    void When_DealerIdentifierIsCorrect_Expect_DealerVerifySuccessfully(){
+        when(dealerJpaRepository.existsById(anyLong())).thenReturn(true);
+        dealerPersistenceAdapter.verifyExistsById(1L);
+        Mockito.verify(dealerJpaRepository,times(1)).existsById(anyLong());
+    }
 }

@@ -10,4 +10,5 @@ public interface DealerPersistencePort {
     Optional<Dealer> findById(Long id);
     Dealer save(Dealer dealer);
     void delete(Long id);
+    void verifyExistsById(Long id);
 }
