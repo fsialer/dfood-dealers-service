@@ -5,6 +5,7 @@ import com.fernando.ms.dealers.app.dfood_dealers_service.application.ports.input
 import com.fernando.ms.dealers.app.dfood_dealers_service.domain.models.Dealer;
 import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.input.rest.mapper.DealerRestMapper;
 import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.input.rest.models.requests.CreateDealerRequest;
+import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.input.rest.models.requests.UpdateDealerRequest;
 import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.input.rest.models.response.DealerResponse;
 import com.fernando.ms.dealers.app.dfood_dealers_service.utils.TestUtilDealer;
 import org.junit.jupiter.api.BeforeEach;
@@ -120,14 +121,14 @@ public class DealerRestAdapterTest {
     @Test
     @DisplayName("When Dealer Information Is Correct Expect Dealer Information Updated Successfully")
     void When_DealerInformationIsCorrect_Expect_DealerInformationUpdatedSuccessfully() throws Exception {
-        DealerResponse productResponse=TestUtilDealer.buildDealerResponseMock();
+        DealerResponse dealerResponse=TestUtilDealer.buildDealerResponseMock();
         Dealer dealer=TestUtilDealer.buildDealerMock();
-        CreateDealerRequest rq=TestUtilDealer.buildCreateDealerRequestMock();
+        UpdateDealerRequest rq=TestUtilDealer.buildUpdateDealerRequestMock();
         when(dealerInputPort.update(anyLong(),any(Dealer.class)))
                 .thenReturn(dealer);
         when(dealerRestMapper.toDealerResponse(any(Dealer.class)))
-                .thenReturn(productResponse);
-        when(dealerRestMapper.toDealer(any(CreateDealerRequest.class)))
+                .thenReturn(dealerResponse);
+        when(dealerRestMapper.toDealer(any(UpdateDealerRequest.class)))
                 .thenReturn(dealer);
 
 
@@ -138,7 +139,7 @@ public class DealerRestAdapterTest {
                 .andExpect(jsonPath("$.id").value(1L));
         Mockito.verify(dealerInputPort,times(1)).update(anyLong(),(any(Dealer.class)));
         Mockito.verify(dealerRestMapper,times(1)).toDealerResponse(any(Dealer.class));
-        Mockito.verify(dealerRestMapper,times(1)).toDealer(any(CreateDealerRequest.class));
+        Mockito.verify(dealerRestMapper,times(1)).toDealer(any(UpdateDealerRequest.class));
     }
 
     @Test

@@ -52,8 +52,6 @@ public class DealerPersistenceAdapterTest {
     @DisplayName("When Dealer Information No Exists Expect A List Void")
     void When_DealerInformationNotExists_Expect_AListVoid(){
         Dealer dealer= TestUtilDealer.buildDealerMock();
-
-
         when(dealerJpaRepository.findAll()).thenReturn(Collections.emptyList());
         when(dealerPersistenceMapper.toDealers(anyList())).thenReturn(Collections.emptyList());
 
@@ -85,11 +83,13 @@ public class DealerPersistenceAdapterTest {
         when(dealerJpaRepository.save(any(DealerEntity.class))).thenReturn(dealerEntity);
         when(dealerPersistenceMapper.toDealerEntity(any(Dealer.class))).thenReturn(dealerEntity);
         when(dealerPersistenceMapper.toDealer(any(DealerEntity.class))).thenReturn(dealer);
+        when(dealerJpaRepository.findById(anyLong())).thenReturn(Optional.of(dealerEntity));
         Dealer dealerResponse=dealerPersistenceAdapter.save(dealer);
         assertNotNull(dealerResponse);
         Mockito.verify(dealerJpaRepository,times(1)).save(any(DealerEntity.class));
         Mockito.verify(dealerPersistenceMapper,times(1)).toDealerEntity(any(Dealer.class));
         Mockito.verify(dealerPersistenceMapper,times(1)).toDealer(any(DealerEntity.class));
+        Mockito.verify(dealerJpaRepository,times(1)).findById(anyLong());
     }
 
     @Test

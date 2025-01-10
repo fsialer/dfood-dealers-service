@@ -3,6 +3,7 @@ package com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter
 import com.fernando.ms.dealers.app.dfood_dealers_service.application.ports.output.DealerPersistencePort;
 import com.fernando.ms.dealers.app.dfood_dealers_service.domain.models.Dealer;
 import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.output.persistence.mapper.DealerPersistenceMapper;
+import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.output.persistence.models.DealerEntity;
 import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.output.persistence.repository.DealerJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,16 @@ public class DealerPersistenceAdapter implements DealerPersistencePort {
 
     @Override
     public Dealer save(Dealer dealer) {
-        return dealerPersistenceMapper.toDealer(dealerJpaRepository.save(dealerPersistenceMapper.toDealerEntity(dealer)));
+        DealerEntity dealerEntity=dealerPersistenceMapper.toDealerEntity(dealer);
+
+        if(dealer.getId()!=null){
+            DealerEntity dealerEntity2= dealerJpaRepository.findById(dealer.getId()).get();
+            dealerEntity.setDealerUser(dealerEntity2.getDealerUser());
+        }else{
+            dealerEntity.setDealerUserId(dealer.getUser().getId());
+        }
+
+        return dealerPersistenceMapper.toDealer(dealerJpaRepository.save(dealerEntity));
     }
 
     @Override

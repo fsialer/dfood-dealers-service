@@ -2,7 +2,6 @@ package com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
@@ -11,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateDealerRequest {
+public class UpdateDealerRequest {
     @NotBlank(message = "Field name cannot be null or blank")
     private String name;
     @NotBlank(message = "Field lastName cannot be null or blank")
@@ -27,6 +26,4 @@ public class CreateDealerRequest {
     @NotBlank(message = "Field expirationDateLicense cannot be null or blank")
     @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "Field expirationDateLicense must be in the format yyyy-MM-dd")
     private String expirationDateLicense;
-    @NotNull(message = "Field userId cannot be null or blank")
-    private Long userId;
 }

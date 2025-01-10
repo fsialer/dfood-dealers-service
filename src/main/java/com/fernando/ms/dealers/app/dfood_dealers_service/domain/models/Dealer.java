@@ -18,4 +18,5 @@ public class Dealer {
     private String numberLicense;
     private String numberDocument;
     private String expirationDateLicense;
+    private User user;
 }

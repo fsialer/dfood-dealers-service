@@ -3,6 +3,7 @@ package com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter
 import com.fernando.ms.dealers.app.dfood_dealers_service.application.ports.input.DealerInputPort;
 import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.input.rest.mapper.DealerRestMapper;
 import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.input.rest.models.requests.CreateDealerRequest;
+import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.input.rest.models.requests.UpdateDealerRequest;
 import com.fernando.ms.dealers.app.dfood_dealers_service.infrastructure.adapter.input.rest.models.response.DealerResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ public class DealerRestAdapter {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DealerResponse> update(@PathVariable Long id,@Valid @RequestBody CreateDealerRequest rq){
+    public ResponseEntity<DealerResponse> update(@PathVariable Long id,@Valid @RequestBody UpdateDealerRequest rq){
         DealerResponse response=dealerRestMapper.toDealerResponse(dealerInputPort.update(id,dealerRestMapper.toDealer(rq)));
         return ResponseEntity.ok().body(response);
     }
